@@ -1,0 +1,122 @@
+{
+  "originHash" : "8cb966caf010bff4c5d094ee141cf3bc0aa839f5f99f61ad6d25f04c1e2db80b",
+  "pins" : [
+    {
+      "identity" : "agorartm_apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AgoraIO/AgoraRtm_Apple.git",
+      "state" : {
+        "revision" : "02ddf96e6ca4ca94d9a2df4e67be2d9f9b63f7b5"
+      }
+    },
+    {
+      "identity" : "benchmarkkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vince-hz/BenchmarkKit.git",
+      "state" : {
+        "revision" : "42f73677f0d7bda45201e44542118f94a50ca4e8",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "debugswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DebugSwift/DebugSwift.git",
+      "state" : {
+        "revision" : "4bb3daceccecefe77502cac2cd148643e7917466",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "dsbridge-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/netless-io/DSBridge-IOS",
+      "state" : {
+        "branch" : "4.0.2",
+        "revision" : "4c780b208af869a577977c24f5bbb453c716f3ce"
+      }
+    },
+    {
+      "identity" : "ettrace",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/EmergeTools/ETTrace",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ea8a0ec37872d732992f1d6fdd2b0307f463eb65"
+      }
+    },
+    {
+      "identity" : "peertalk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/EmergeTools/peertalk.git",
+      "state" : {
+        "revision" : "02b8bebff91cd3d7a5d89c0ddb4bbd873c62879d",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "c8742ed97fc2f0c015a5ea5eddefb064cd7532d2",
+        "version" : "6.0.0"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit.git",
+      "state" : {
+        "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
+        "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "011f0c765fb46d9cac61bca19be0527e99c98c8b",
+        "version" : "1.5.1"
+      }
+    },
+    {
+      "identity" : "swifter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/httpswift/swifter.git",
+      "state" : {
+        "revision" : "9483a5d459b45c3ffd059f7b55f9638e268632fd",
+        "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "toast-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scalessec/Toast-Swift.git",
+      "state" : {
+        "revision" : "ddccd20d6fb718448d9b179c454c561653fda7d5",
+        "version" : "5.1.1"
+      }
+    },
+    {
+      "identity" : "yswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/y-crdt/yswift",
+      "state" : {
+        "revision" : "8c25f088fcccfc3c428c37ac9206a297d031f1c5",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "zip",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/Zip.git",
+      "state" : {
+        "revision" : "67fa55813b9e7b3b9acee9c0ae501def28746d76",
+        "version" : "2.1.2"
+      }
+    }
+  ],
+  "version" : 3
+}

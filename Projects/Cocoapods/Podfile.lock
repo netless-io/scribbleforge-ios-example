@@ -1,0 +1,87 @@
+PODS:
+  - AgoraRtcEngine_iOS (4.3.2):
+    - AgoraRtcEngine_iOS/AIAEC (= 4.3.2)
+    - AgoraRtcEngine_iOS/AINS (= 4.3.2)
+    - AgoraRtcEngine_iOS/AudioBeauty (= 4.3.2)
+    - AgoraRtcEngine_iOS/ClearVision (= 4.3.2)
+    - AgoraRtcEngine_iOS/ContentInspect (= 4.3.2)
+    - AgoraRtcEngine_iOS/FaceCapture (= 4.3.2)
+    - AgoraRtcEngine_iOS/FaceDetection (= 4.3.2)
+    - AgoraRtcEngine_iOS/LipSync (= 4.3.2)
+    - AgoraRtcEngine_iOS/ReplayKit (= 4.3.2)
+    - AgoraRtcEngine_iOS/RtcBasic (= 4.3.2)
+    - AgoraRtcEngine_iOS/SpatialAudio (= 4.3.2)
+    - AgoraRtcEngine_iOS/VideoAv1CodecDec (= 4.3.2)
+    - AgoraRtcEngine_iOS/VideoAv1CodecEnc (= 4.3.2)
+    - AgoraRtcEngine_iOS/VideoCodecDec (= 4.3.2)
+    - AgoraRtcEngine_iOS/VideoCodecEnc (= 4.3.2)
+    - AgoraRtcEngine_iOS/VirtualBackground (= 4.3.2)
+    - AgoraRtcEngine_iOS/VQA (= 4.3.2)
+  - AgoraRtcEngine_iOS/AIAEC (4.3.2)
+  - AgoraRtcEngine_iOS/AINS (4.3.2)
+  - AgoraRtcEngine_iOS/AudioBeauty (4.3.2)
+  - AgoraRtcEngine_iOS/ClearVision (4.3.2)
+  - AgoraRtcEngine_iOS/ContentInspect (4.3.2)
+  - AgoraRtcEngine_iOS/FaceCapture (4.3.2)
+  - AgoraRtcEngine_iOS/FaceDetection (4.3.2)
+  - AgoraRtcEngine_iOS/LipSync (4.3.2)
+  - AgoraRtcEngine_iOS/ReplayKit (4.3.2)
+  - AgoraRtcEngine_iOS/RtcBasic (4.3.2)
+  - AgoraRtcEngine_iOS/SpatialAudio (4.3.2)
+  - AgoraRtcEngine_iOS/VideoAv1CodecDec (4.3.2)
+  - AgoraRtcEngine_iOS/VideoAv1CodecEnc (4.3.2)
+  - AgoraRtcEngine_iOS/VideoCodecDec (4.3.2)
+  - AgoraRtcEngine_iOS/VideoCodecEnc (4.3.2)
+  - AgoraRtcEngine_iOS/VirtualBackground (4.3.2)
+  - AgoraRtcEngine_iOS/VQA (4.3.2)
+  - AgoraRtm/RtmKit (2.2.4)
+  - DebugSwift (0.4.0)
+  - NTLBridge (3.2.0)
+  - RxSwift (6.9.0)
+  - ScribbleForge/AgoraRtmKit2.2.x (1.0.0-alpha.1):
+    - AgoraRtm/RtmKit (~> 2.2.2)
+    - ScribbleForge/Basic
+  - ScribbleForge/Basic (1.0.0-alpha.1):
+    - NTLBridge (= 3.2.0)
+    - RxSwift
+  - SnapKit (5.7.1)
+  - Toast-Swift (5.1.1)
+  - Zip (2.1.2)
+
+DEPENDENCIES:
+  - AgoraRtcEngine_iOS (~> 4.3.0)
+  - DebugSwift
+  - ScribbleForge/AgoraRtmKit2.2.x (from `../../../scribbleforge-ios`)
+  - SnapKit
+  - Toast-Swift
+  - Zip
+
+SPEC REPOS:
+  trunk:
+    - AgoraRtcEngine_iOS
+    - AgoraRtm
+    - DebugSwift
+    - NTLBridge
+    - RxSwift
+    - SnapKit
+    - Toast-Swift
+    - Zip
+
+EXTERNAL SOURCES:
+  ScribbleForge:
+    :path: "../../../scribbleforge-ios"
+
+SPEC CHECKSUMS:
+  AgoraRtcEngine_iOS: eaa97751fcfe1b50d9b067e0df92752a6a5f899f
+  AgoraRtm: 534144434383d41b3b0ebfae2a961ef0f51b0645
+  DebugSwift: d686a060373a0ed5cfb3395ab75229ae455dc9cf
+  NTLBridge: 91ac1b67e33e3e94d539bc815499e8c23d32cd37
+  RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
+  ScribbleForge: e58e609447a884120401b63237fa2650a9ad31f7
+  SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+  Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
+  Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
+
+PODFILE CHECKSUM: 7e97483364fc9f7f8c781706587205817ab5739d
+
+COCOAPODS: 1.16.2
