@@ -39,13 +39,6 @@ extension RoomViewController {
         if let app = app as? ImageDoc {
             app.delegate = self
         }
-        if app is WindowManager {
-            menuButton.setImage(
-                UIImage(systemName: "macwindow.on.rectangle", withConfiguration: UIImage.SymbolConfiguration.init(font: .systemFont(ofSize: 14))),
-                for: .normal)
-            menuButton.addTarget(self, action: #selector(setupWindowManager), for: .menuActionTriggered)
-            setupWindowManager(menuButton)
-        }
         if app is Whiteboard {
             menuButton.addTarget(self, action: #selector(setupWhiteboard), for: .menuActionTriggered)
             setupWhiteboard(menuButton)
@@ -88,6 +81,9 @@ extension RoomViewController {
         })
 
         let detailMenu = UIMenu(title: "Detail", children: [
+            UIAction(title: "Insert Image", handler: { [unowned whiteboard] _ in
+                whiteboard?.insert(image: .init(string: "https://convertcdn.netless.link/dynamicConvert/2d50ba6075dd46d0817dfe518d089a07/preview/1.png")!)
+            }),
             UIAction(title: "Transparent Background", handler: { [unowned whiteboard] _ in
                 whiteboard?.applicationView?.isOpaque = false
                 whiteboard?.setBackgroundColor(.clear)
@@ -248,7 +244,7 @@ extension RoomViewController {
 
     @objc
     func setupWindowManager(_ menuButton: UIButton) {
-        let app = apps[menuButton.tag] as! WindowManager
+        let app = windowManager!
 
         let ratioMenu = UIMenu(title: "Ratio", children: [
             UIAction(title: "1:1", handler: { [unowned app] _ in

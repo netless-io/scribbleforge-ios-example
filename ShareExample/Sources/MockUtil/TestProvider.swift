@@ -11,6 +11,7 @@ class TestProvider: NetworkProvider {
         // 模拟登录成功。
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.mockStatusUpdate(.connected)
+            self.userJoinListeners.forEach { $0(self.userId) }
             completionHandler(.success(()))
         }
     }
@@ -23,10 +24,14 @@ class TestProvider: NetworkProvider {
         networkListeners.removeAll()
     }
     
+    var userJoinListeners: [((String) -> Void)] = []
     func addUserJoinListener(_ listener: @escaping ((String) -> Void)) {
+        userJoinListeners.append(listener)
     }
     
+    var userLeaveListeners: [((String) -> Void)] = []
     func addUserLeaveListener(_ listener: @escaping ((String) -> Void)) {
+        userLeaveListeners.append(listener)
     }
     
     func getUsersSnapshot(_ completionHandler: @escaping ((Result<[String], any Error>) -> Void)) {

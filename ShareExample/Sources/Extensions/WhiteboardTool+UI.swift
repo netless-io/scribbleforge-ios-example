@@ -89,6 +89,8 @@ extension WhiteboardToolType {
             image = "arrow.backward"
         case .grab:
             image = "hand.draw.fill"
+        case .pointer:
+            image = "cursorarrow.rays"
         }
         return image
     }

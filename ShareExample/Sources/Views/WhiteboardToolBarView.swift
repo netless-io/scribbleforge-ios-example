@@ -57,7 +57,8 @@ class WhiteboardToolBarView: BlurBackgroundView {
         .eraser,
         .text,
         .laser,
-        .grab
+        .grab,
+        .pointer
     ]
     
     private func setupUI() {

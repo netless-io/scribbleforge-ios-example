@@ -4,7 +4,6 @@ import ScribbleForge
 import SnapKit
 import SwiftUI
 import UIKit
-//import Toast_Swift
 
 let zipUrl = FileManager.default.temporaryDirectory.appendingPathComponent("sf.zip")
 
@@ -46,6 +45,21 @@ class RoomViewController: UIViewController {
                     make.edges.equalToSuperview()
                 }
                 mainContainer.bringSubviewToFront(applicationView)
+
+                let menuButton = UIButton(type: .system)
+                menuButton.backgroundColor = .systemRed.withAlphaComponent(0.65)
+                windowManager.applicationView?.addSubview(menuButton)
+                menuButton.showsMenuAsPrimaryAction = true
+                menuButton.snp.makeConstraints { make in
+                    make.left.top.equalToSuperview()
+                }
+
+                menuButton.setImage(
+                    UIImage(systemName: "macwindow.on.rectangle", withConfiguration: UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))),
+                    for: .normal
+                )
+                menuButton.addTarget(self, action: #selector(setupWindowManager), for: .menuActionTriggered)
+                setupWindowManager(menuButton)
             }
         }
     }
@@ -144,11 +158,6 @@ class RoomViewController: UIViewController {
         }
     }
 
-    func launchWindowManager() {
-        let option = WindowManagerOption(ratio: ratio, windowPosition: .init(x: 0.15, y: 0.15))
-        room.launchWindowManager(option: option, { _ in })
-    }
-
     func initAction() {
         if let context = room.value(forKey: "__context") as? JSContext {
             if #available(iOS 16.4, *) {
@@ -169,7 +178,6 @@ class RoomViewController: UIViewController {
                 self.setupViews()
                 self.hideMenu = true
                 if self.prepareConfig.launchDefault {
-                    self.launchFromHistory()
 //                    self.launchWhiteboard()
 //                    self.launchWindowManager()
                 }
@@ -181,87 +189,12 @@ class RoomViewController: UIViewController {
         }
     }
 
-    func launchFromHistory() {
-//        func objFrom(dic: [String: Any]) -> YPlainObject {
-//            let obj = room._debugDoc.context.createPlainObject()
-//                for (key, value) in dic {
-//                    switch value {
-//                    case let str as String:
-//                        obj.setValue(key: key, value: str)
-//                    case let int as Int:
-//                        obj.setValue(key: key, value: int)
-//                    case let double as Double:
-//                        obj.setValue(key: key, value: double)
-//                    case let dic as [String: Any]:
-//                        obj.setValue(key: key, value: dic)
-//                    default:
-//                        break
-//                    }
-//                }
-//            return obj
-        }
-        
-        func assignObj(_ obj: [String: Any], to map: YMap) {
-//            for (key, value) in obj {
-//                switch value {
-//                case let str as String:
-//                    map.set(key: key, value: str)
-//                case let int as Int:
-//                    map.set(key: key, value: int)
-//                case let double as Double:
-//                    map.set(key: key, value: double)
-//                default: break
-//                }
-//            }
-//        }
-//
-//        if let str = UserDefaults.standard.value(forKey: "saved_doc_str") as? String,
-//           let dic = try? JSONSerialization.jsonObject(with: Data(str.utf8), options: []) as? [String: Any]
-//        {
-//            func applyApplicationManager(appManagerKey: String) {
-//                let appMap = room._debugDoc.getMap(id: appManagerKey)
-//                if let appsDic = dic[appManagerKey] as? [String: Any] {
-//                    for (key, value) in appsDic {
-//                        let d = (value as? [String: Any]) ?? [:]
-//                        let type = d["type"] as? String ?? ""
-//                        let uuid = d["uuid"] as? String ?? ""
-//                        let userInfoKey = "@app/\(type)/\(uuid)/user/\(self.room.userId)"
-//                        let userInfoDic = (dic[userInfoKey] as? [String: Any]) ?? [:]
-//                        let userInfoMap = self.room._debugDoc.getMap(id: userInfoKey)
-//                        assignObj(userInfoDic, to: userInfoMap)
-//                        let obj = objFrom(dic: d)
-//                        appMap.set(key: key, value: obj)
-//                    }
-//                }
-//            }
-//            
-//            // Load windows info.
-//            let windowsKey = "@app/window-manager/WindowManager/windows"
-//            let windows = room._debugDoc.getMap(id: windowsKey)
-//            if let windowsDic = dic[windowsKey] as? [String: Any] {
-//                for (key, value) in windowsDic {
-//                    let map = room._debugDoc.context.createYMap()
-//                    if let obj = value as? [String: Any] {
-//                        assignObj(obj, to: map)
-//                    }
-//                    windows.set(key: key, value: map)
-//                }
-//            }
-//            
-//            // Load apps.
-//            applyApplicationManager(appManagerKey: "@room/applications")
-//            
-//            // Load windowManager.
-//            applyApplicationManager(appManagerKey: "@app/window-manager/WindowManager/applications")
-//        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         updateExampleItems()
         initAction()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let isVertical = view.frame.height > view.frame.width
@@ -301,11 +234,12 @@ class RoomViewController: UIViewController {
 
     func onAppAdd(_ app: Application) {
         setupAppMenu(app)
-        if let wm = app as? WindowManager {
-            windowManager = wm
-        }
         if let whiteboard = app as? Whiteboard, whiteboard.appId == "MainWhiteboard" {
             self.whiteboard = whiteboard
+            
+            if self.windowManager == nil {
+                self.windowManager = self.room.windowManager
+            }
         }
     }
 
@@ -398,7 +332,7 @@ extension RoomViewController: RoomDelegate {
     }
 
     func roomApplicationDidLaunch(_: Room, application: any Application) {
-        print(#function)
+        print(#function, application.appId)
         onAppAdd(application)
     }
 
@@ -428,7 +362,7 @@ extension RoomViewController: WhiteboardDelegate {
         whiteboardControlView.toolBarView.syncCurrentTool(
             toolType: toolInfo.tool,
             strokeColor: UIColor(hex: toolInfo.strokeColor),
-            fillColor: toolInfo.fillColor.map { UIColor(hex: $0)},
+            fillColor: toolInfo.fillColor.map { UIColor(hex: $0) },
             strokeWidth: toolInfo.strokeWidth,
             textSize: toolInfo.fontSize,
             dash: toolInfo.dashArray

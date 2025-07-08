@@ -286,7 +286,7 @@ struct HomeView: View {
         }.tint(.purple)
     }
 }
-
-#Preview {
-    HomeView()
-}
+//
+//#Preview {
+//    HomeView()
+//}

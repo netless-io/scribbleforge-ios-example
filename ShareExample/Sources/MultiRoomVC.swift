@@ -61,16 +61,24 @@ class MultiRoomVC: UIViewController {
             let userId = "user-\(index)"
             let provider = TestProvider(userId: userId)
 
+            let fetcher: MockSnapshotFetcher
+            if config.launchDefault {
+                let data = UserDefaults.standard.data(forKey: "localSnapshot")
+                fetcher = .init(data: data)
+            } else {
+                fetcher = .init(data: nil)
+            }
+            
             let room = Room(
                 roomId: roomId,
                 userId: userId,
                 nickName: userId + "-nickname",
-                snapshotFetcher: MockSnapshotFetcher(),
+                snapshotFetcher: fetcher,
                 uploaderExecutor: MockExecutor(type: .success),
                 remoteLogger: nil,
                 networkProvider: provider,
+                windowManagerOption: nil,
                 mergeThrottleTime: 0,
-                mergeBufferCount: 0,
                 allowConsoleVerboseLog: config.showVerboseLog,
                 jscPerfObserveEnable: true
             )

@@ -80,7 +80,13 @@ class WhiteboardControlView: UIView {
             alert.addAction(.init(title: "Confirm", style: .default, handler: { _ in
                 self.whiteboard?.clean()
             }))
-            self.window?.rootViewController?.present(alert, animated: true)
+            var top: UIViewController? = self.window?.rootViewController
+            
+            while let presented = top?.presentedViewController {
+                top = presented
+            }
+            
+            top?.present(alert, animated: true)
         }
         toolBarView.textSizeClickHandler = { [weak self] textSize in
             self?.whiteboard?.setFontSize(textSize)

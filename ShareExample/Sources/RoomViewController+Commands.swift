@@ -55,6 +55,7 @@ extension RoomViewController {
                 ])
                 let docsMenu = UIMenu(title: "Doc", children: [
                     UIAction(title: "Dump Doc", handler: { [unowned self] _ in
+                        print("guid: ", self.room._debugDoc.guid ?? "")
                         let value = self.room.perform(NSSelectorFromString("dump"))!.takeUnretainedValue() as! String
                         UIPasteboard.general.string = value
                         print(value)
@@ -122,9 +123,6 @@ extension RoomViewController {
                     UIAction(title: "Whiteboard", handler: { _ in
                         self.launchWhiteboard()
                     }),
-                    UIAction(title: "WindowManager", handler: { _ in
-                        self.launchWindowManager()
-                    }),
                 ])
                 btn.menu = menu
             }),
@@ -140,8 +138,9 @@ extension RoomViewController {
                 btn.menu = menu
             }),
             .init(title: "Save as default", clickBlock: { [unowned self] _ in
-                let value = self.room.perform(NSSelectorFromString("dump"))!.takeUnretainedValue() as! String
-                UserDefaults.standard.set(value, forKey: "saved_doc_str")
+                if let data = self.room.snapshot() {
+                    UserDefaults.standard.set(data, forKey: "localSnapshot")
+                }
             }),
             .init(title: "Hide Menu", clickBlock: { [unowned self] _ in
                 self.hideMenu.toggle()

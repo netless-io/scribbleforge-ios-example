@@ -28,7 +28,7 @@ func createDefaultRoom(
         uploaderExecutor: MockExecutor(type: .success),
         remoteLogger: nil,
         networkProvider: networkProvider,
-        mergeBufferCount: mergeBufferCount
+        windowManagerOption: nil
     )
     room.set(key: "allowMultiRoom", value: allowMultiRoom)
     return room
