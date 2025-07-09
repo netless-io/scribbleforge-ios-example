@@ -30,7 +30,7 @@ elif [ "$manager" = "cocoapods" ]; then
     cd $COCOAPODS_PROJECT_PATH
     tuist generate --no-open
     pod install
-    open ./S11E-Cocoapods-Example.xcworkspace
+    open ./S11E-Pod.xcworkspace
 else
     echo "Invalid choice. Exiting."
     exit 1

@@ -1,13 +1,13 @@
 import ProjectDescription
 
 let project = Project(
-    name: "S11E-Cocoapods-Example",
+    name: "S11E-Pod",
     targets: [
         .target(
-            name: "S11E-Cocoapods-Example",
+            name: "S11E-Pod",
             destinations: .iOS,
             product: .app,
-            bundleId: "io.tuist.S11E-Cocoapods-Example",
+            bundleId: "-",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
                 with: [

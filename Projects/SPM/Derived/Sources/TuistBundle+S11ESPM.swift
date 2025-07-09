@@ -11,12 +11,12 @@ import Foundation
 // MARK: - Swift Bundle Accessor for Frameworks
 private class BundleFinder {}
 extension Foundation.Bundle {
-/// Since S11E-SPM-Example is a application, the bundle for classes within this module can be used directly.
+/// Since S11E-SPM is a application, the bundle for classes within this module can be used directly.
     static let module = Bundle(for: BundleFinder.self)
 }
 // MARK: - Objective-C Bundle Accessor
 @objc
-public class S11ESPMExampleResources: NSObject {
+public class S11ESPMResources: NSObject {
 @objc public class var bundle: Bundle {
     return .module
 }

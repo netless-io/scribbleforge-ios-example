@@ -1,5 +1,5 @@
 {
-  "originHash" : "75899930c7bb5c3d150380e17a246b1f4e8ba1460ffe9950897532b898b02ccc",
+  "originHash" : "f876c7c8dc58d63cc49faeea57df52fa29e4973b93c5d97798fb7374e0f0bfae",
   "pins" : [
     {
       "identity" : "agorartm_apple",
@@ -43,6 +43,14 @@
       "state" : {
         "branch" : "main",
         "revision" : "ea8a0ec37872d732992f1d6fdd2b0307f463eb65"
+      }
+    },
+    {
+      "identity" : "messagepacker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/netless-io/MessagePacker.git",
+      "state" : {
+        "revision" : "96173639b489152f91b8971a3718dde7e7adb234"
       }
     },
     {

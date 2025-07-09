@@ -17,9 +17,9 @@
 
 // MARK: - Asset Catalogs
 
-public enum S11ESPMExampleAsset: Sendable {
+public enum S11EPodAsset: Sendable {
   public enum Assets {
-  public static let accentColor = S11ESPMExampleColors(name: "AccentColor")
+  public static let accentColor = S11EPodColors(name: "AccentColor")
   }
   public enum PreviewAssets {
   }
@@ -27,7 +27,7 @@ public enum S11ESPMExampleAsset: Sendable {
 
 // MARK: - Implementation Details
 
-public final class S11ESPMExampleColors: Sendable {
+public final class S11EPodColors: Sendable {
   public let name: String
 
   #if os(macOS)
@@ -56,9 +56,9 @@ public final class S11ESPMExampleColors: Sendable {
   }
 }
 
-public extension S11ESPMExampleColors.Color {
+public extension S11EPodColors.Color {
   @available(iOS 11.0, tvOS 11.0, watchOS 4.0, macOS 10.13, visionOS 1.0, *)
-  convenience init?(asset: S11ESPMExampleColors) {
+  convenience init?(asset: S11EPodColors) {
     let bundle = Bundle.module
     #if os(iOS) || os(tvOS) || os(visionOS)
     self.init(named: asset.name, in: bundle, compatibleWith: nil)
@@ -73,7 +73,7 @@ public extension S11ESPMExampleColors.Color {
 #if canImport(SwiftUI)
 @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, visionOS 1.0, *)
 public extension SwiftUI.Color {
-  init(asset: S11ESPMExampleColors) {
+  init(asset: S11EPodColors) {
     let bundle = Bundle.module
     self.init(asset.name, bundle: bundle)
   }
