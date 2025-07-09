@@ -136,6 +136,12 @@ class RoomViewController: UIViewController {
             make.width.height.equalTo(32)
         }
 
+        view.addSubview(connectionStateLabel)
+        connectionStateLabel.snp.makeConstraints { make in
+            make.left.equalTo(view.safeAreaLayoutGuide).inset(16)
+            make.centerY.equalTo(view)
+        }
+
         syncRatio()
     }
 
@@ -284,6 +290,16 @@ class RoomViewController: UIViewController {
     lazy var whiteboardControlView = WhiteboardControlView()
     lazy var exampleControlView = ExampleControlView(items: exampleItems)
 
+    lazy var connectionStateLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .black
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .white
+        label.text = "State: Connecting"
+        label.numberOfLines = 0
+        return label
+    }()
+
     var randomMoving = false
     @objc func randomMoveLoop() {
         randomMoving = true
@@ -298,6 +314,7 @@ class RoomViewController: UIViewController {
     var targetUserPage: Int?
 }
 
+// MARK: - RoomDelegate
 extension RoomViewController: RoomDelegate {
     @objc func onSetUserPageTfUpdate(_ tf: UITextField) {
         if let page = Int(tf.text ?? "") {
@@ -319,7 +336,8 @@ extension RoomViewController: RoomDelegate {
         present(alert, animated: true)
     }
 
-    func roomConnectionStateDidUpdate(_: ScribbleForge.Room, connectionState _: ScribbleForge.NetworkConnectionState, info _: [String: Any]) {
+    func roomConnectionStateDidUpdate(_: ScribbleForge.Room, connectionState: ScribbleForge.NetworkConnectionState, info: [String: Any]) {
+        connectionStateLabel.text = "State: \(connectionState)"
         print(#function)
     }
 
@@ -464,6 +482,7 @@ extension RoomViewController: WindowManagerDelegate {
     }
 }
 
+// MARK: - Slide delegate
 extension RoomViewController: SlideDelegate {
     func slidePermissionChange(_: Slide, userId: String, permission: SlidePermission) {
         print("[slide delegate]", #function, userId, permission)
