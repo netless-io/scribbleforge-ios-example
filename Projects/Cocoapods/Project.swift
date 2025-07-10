@@ -7,7 +7,7 @@ let project = Project(
             name: "S11E-Pod",
             destinations: .iOS,
             product: .app,
-            bundleId: "-",
+            bundleId: "scribbleforge.test.agora",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
                 with: [
