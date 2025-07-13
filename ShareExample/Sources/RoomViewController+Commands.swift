@@ -54,28 +54,24 @@ extension RoomViewController {
                     }),
                 ])
                 let docsMenu = UIMenu(title: "Doc", children: [
-                    UIAction(title: "Dump Doc", handler: { [unowned self] _ in
-                        print("guid: ", self.room._debugDoc.guid ?? "")
-                        let value = self.room.perform(NSSelectorFromString("dump"))!.takeUnretainedValue() as! String
-                        UIPasteboard.general.string = value
-                        print(value)
-                    }),
-                    UIAction(title: "Get Record url", handler: { [unowned self] _ in
-                        let fileUrl = self.room.getRecordFile()
-                        print("record url", fileUrl)
-                    }),
                     UIAction(title: "Save doc", handler: { [unowned self] _ in
-//                        let update = self.room._debugDoc.yContext.encodeStateAsUpdate(doc: self.room._debugDoc)
-//                        // write to file.
-//                        let fileName = "doc-\(self.room.roomId)-\(Date().timeIntervalSince1970).ydoc"
-//                        let fileUrl = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-//                        do {
-//                            try update.write(to: fileUrl)
-//                            print("save doc to", fileUrl)
-//                        } catch {
-//                            print("save doc error", error)
-//                        }
-                    })
+                        guard let doc = self.room.perform(NSSelectorFromString("_debugDoc")).takeUnretainedValue() as? YDoc
+                        else { return }
+                        let sel = NSSelectorFromString("generateRoomSnapshotFromMaindoc:")
+                        if Room.responds(to: sel) {
+                            if let snapshot = Room.perform(sel, with: doc).takeUnretainedValue() as? Data {
+                                let fileName = "doc-\(self.room.roomId)-\(Date().timeIntervalSince1970).ydoc"
+                                let fileUrl = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+                                do {
+                                    try snapshot.write(to: fileUrl)
+                                    print("save doc to", fileUrl)
+                                } catch {
+                                    print("save doc error", error)
+                                }
+                            }
+                            return
+                        }
+                    }),
                 ])
 
                 let appCrashMenus = UIMenu(title: "JSMemory Crash", image: UIImage(systemName: "exclamationmark.warninglight.fill"), children: self.apps.values.compactMap { app -> UIAction? in
@@ -137,11 +133,11 @@ extension RoomViewController {
                 let menu = UIMenu(title: "Terminal", children: actions)
                 btn.menu = menu
             }),
-            .init(title: "Save as default", clickBlock: { [unowned self] _ in
-                if let data = self.room.snapshot() {
-                    UserDefaults.standard.set(data, forKey: "localSnapshot")
-                }
-            }),
+//            .init(title: "Save as default", clickBlock: { [unowned self] _ in
+//                if let data = self.room.snapshot() {
+//                    UserDefaults.standard.set(data, forKey: "localSnapshot")
+//                }
+//            }),
             .init(title: "Hide Menu", clickBlock: { [unowned self] _ in
                 self.hideMenu.toggle()
             }),
