@@ -97,12 +97,19 @@ class RoomViewController: UIViewController {
     var ob: Any?
 
     lazy var mainStageContainer = UIView()
+    lazy var statusView: StatusView = {
+        let view = StatusView()
+        return view
+    }()
+    
     lazy var mainContainer: UIStackView = {
         let containerStack = UIStackView(arrangedSubviews: [
+            statusView,
             mainStageContainer,
             exampleControlView,
         ])
         containerStack.axis = .horizontal
+        containerStack.spacing = 8
         return containerStack
     }()
 
@@ -134,12 +141,6 @@ class RoomViewController: UIViewController {
         showMenuButton.snp.makeConstraints { make in
             make.right.centerY.equalTo(view.safeAreaLayoutGuide)
             make.width.height.equalTo(32)
-        }
-
-        view.addSubview(connectionStateLabel)
-        connectionStateLabel.snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide).inset(16)
-            make.centerY.equalTo(view)
         }
 
         syncRatio()
@@ -210,9 +211,15 @@ class RoomViewController: UIViewController {
             exampleControlView.snp.remakeConstraints { make in
                 make.height.equalTo(144)
             }
+            statusView.snp.remakeConstraints { make in
+                make.height.equalTo(50)
+            }
         } else {
             exampleControlView.snp.remakeConstraints { make in
                 make.width.equalTo(144)
+            }
+            statusView.snp.remakeConstraints { make in
+                make.width.equalTo(120)
             }
         }
     }
@@ -290,15 +297,6 @@ class RoomViewController: UIViewController {
     lazy var whiteboardControlView = WhiteboardControlView()
     lazy var exampleControlView = ExampleControlView(items: exampleItems)
 
-    lazy var connectionStateLabel: UILabel = {
-        let label = UILabel()
-        label.backgroundColor = .black
-        label.font = .systemFont(ofSize: 14)
-        label.textColor = .white
-        label.text = "State: Connecting"
-        label.numberOfLines = 0
-        return label
-    }()
 
     var randomMoving = false
     @objc func randomMoveLoop() {
@@ -337,7 +335,7 @@ extension RoomViewController: RoomDelegate {
     }
 
     func roomConnectionStateDidUpdate(_: ScribbleForge.Room, connectionState: ScribbleForge.NetworkConnectionState, info: [String: Any]) {
-        connectionStateLabel.text = "State: \(connectionState)"
+        statusView.updateConnectionState(connectionState)
         print(#function)
     }
 
