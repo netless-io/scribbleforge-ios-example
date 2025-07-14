@@ -44,7 +44,13 @@ class HomeVC: UIViewController {
             }
             if let data = data {
                 let json = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                let rtmToken = json["token"] as! String
+                guard let rtmToken = json["token"] as? String else {
+                    DispatchQueue.main.async {
+                        let error = NSError(domain: "ScribbleForge-Example", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid token response"])
+                        completionHandler?(.failure(error))
+                    }
+                    return
+                }
                 DispatchQueue.main.async {
                     completionHandler?(.success(rtmToken))
                 }
@@ -67,6 +73,7 @@ class HomeVC: UIViewController {
                     case let .failure(error):
                         print("Generate rtm token error", error)
                         self.updateIndicator(show: false)
+                        self.view.makeToast("Generate rtm token error: \(error.localizedDescription)")
                     }
                 }
                 return
