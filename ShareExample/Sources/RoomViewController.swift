@@ -144,6 +144,8 @@ class RoomViewController: UIViewController {
         }
 
         syncRatio()
+        
+        statusView.updateDependencies(Bundle.scribbleForgeDependencies)
     }
 
     func launchWhiteboard() {
