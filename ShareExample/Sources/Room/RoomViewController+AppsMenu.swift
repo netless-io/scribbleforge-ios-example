@@ -121,9 +121,12 @@ extension RoomViewController {
                 let alert = UIAlertController(title: "StrokeWidth", message: nil, preferredStyle: .alert)
                 alert.addTextField { tf in
                     tf.keyboardType = .numberPad
-                    tf.addTarget(self, action: #selector(self.onUpdateStrokeWidth), for: .editingDidEnd)
                 }
-                alert.addAction(UIAlertAction(title: "Exit", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
+                    guard let text = alert.textFields?.first?.text, let width = Float(text) else { return }
+                    app.setStrokeWidth(width)
+                }))
                 self.present(alert, animated: true)
             }),
         ])
@@ -134,13 +137,11 @@ extension RoomViewController {
                 let alert = UIAlertController(title: "FollowSomeOne", message: nil, preferredStyle: .alert)
                 alert.addTextField { tf in
                     tf.keyboardType = .default
-                    tf.addTarget(self, action: #selector(self.onFollowSomeOne), for: .editingChanged)
                 }
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { [unowned self, unowned app] _ in
-                    if let id = self.followId {
-                        app.setViewMode(.follow(userId: id))
-                    }
+                alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { [unowned app] _ in
+                    guard let id = alert.textFields?.first?.text else { return }
+                    app.setViewMode(.follow(userId: id))
                 }))
                 self.present(alert, animated: true)
             }),
@@ -243,8 +244,8 @@ extension RoomViewController {
     }
 
     @objc
-    func setupWindowManager(_ menuButton: UIButton) {
-        let app = windowManager!
+    func setupWindowManagerButtons(_ menuButton: UIButton) {
+        let app = windowManager
 
         let ratioMenu = UIMenu(title: "Ratio", children: [
             UIAction(title: "1:1", handler: { [unowned app] _ in
@@ -298,9 +299,9 @@ extension RoomViewController {
             launchMenu,
             permissionMenu,
             ratioMenu,
-            UIAction(title: "Random Drag", state: randomMoving ? .on : .off, handler: { [unowned self] _ in
-                if self.randomMoving {
-                    self.randomMoving = false
+            UIAction(title: "Random Drag", state: windowManagerRandomMoving ? .on : .off, handler: { [unowned self] _ in
+                if self.windowManagerRandomMoving {
+                    self.windowManagerRandomMoving = false
                     NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.randomMoveLoop), object: nil)
                 } else {
                     self.randomMoveLoop()

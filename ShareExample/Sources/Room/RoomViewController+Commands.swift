@@ -91,9 +91,9 @@ extension RoomViewController {
                     logsMenu,
                     docsMenu,
                     appCrashMenus,
-                    UIAction(title: "Random Network Loss", state: self.randomLoss ? .on : .off, handler: { [unowned self] _ in
-                        self.randomLoss.toggle()
-                        self.room.set(key: "randomLoss", value: self.randomLoss)
+                    UIAction(title: "Random Network Loss", state: self.monitorNetworkRandomLoss ? .on : .off, handler: { [unowned self] _ in
+                        self.monitorNetworkRandomLoss.toggle()
+                        self.room.set(key: "randomLoss", value: self.monitorNetworkRandomLoss)
                         self.reloadExampleItems()
                     }),
                     UIAction(title: "Clear KV Cache", handler: { _ in
@@ -138,9 +138,6 @@ extension RoomViewController {
 //                    UserDefaults.standard.set(data, forKey: "localSnapshot")
 //                }
 //            }),
-            .init(title: "Hide Menu", clickBlock: { [unowned self] _ in
-                self.hideMenu.toggle()
-            }),
         ]
 
         if responds(to: NSSelectorFromString("tempCommands")) {
