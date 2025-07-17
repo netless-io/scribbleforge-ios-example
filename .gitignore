@@ -20,6 +20,8 @@ DerivedData
 *.ipa
 
 Pods/
+Podfile
+Podfile.lock
 
 RoomViewController+TempCommand.swift
 
