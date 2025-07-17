@@ -123,7 +123,10 @@ class RoomViewController: UIViewController {
 
         syncRatio()
         
-        sdkStatusView.updateDependencies(Bundle.scribbleForgeDependencies)
+        var d = Bundle.scribbleForgeDependencies
+        d[" ScribbleForge"] = Room.sdkVersion()
+        let dd = d.sorted { $0.key < $1.key }
+        sdkStatusView.updateDependencies(dd)
     }
 
     func initAction() {
@@ -191,6 +194,7 @@ class RoomViewController: UIViewController {
         ])
         containerStack.axis = .horizontal
         containerStack.spacing = 4
+        exampleControlView.isHidden = true
         return containerStack
     }()
     lazy var showMenuButton: UIButton = {

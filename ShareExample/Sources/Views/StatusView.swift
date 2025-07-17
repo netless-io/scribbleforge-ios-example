@@ -81,7 +81,7 @@ class StatusView: UIView {
         }
     }
     
-    func updateDependencies(_ dependencies: [String: String]) {
+    func updateDependencies(_ dependencies: [(key: String, value: String)]) {
         let depsText: String = dependencies.reduce(into: "Deps: \n") { partialResult, next in
             let w = "\n\(next.key): \n\(next.value)\n"
             partialResult += w
