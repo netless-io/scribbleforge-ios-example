@@ -1,5 +1,6 @@
 import ProjectDescription
 
+let envTeamId = Environment.appTeamId.getString(default: "")
 let project = Project(
     name: "S11E-Pod",
     targets: [
@@ -19,7 +20,10 @@ let project = Project(
             ),
             sources: ["../../ShareExample/Sources/**"],
             resources: ["../../ShareExample/Resources/**"],
-            dependencies: []
+            dependencies: [],
+            settings: .settings(base: [
+                "DEVELOPMENT_TEAM": .string(envTeamId)
+            ])
         )
     ]
 )
