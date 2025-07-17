@@ -195,9 +195,9 @@ class RoomViewController: UIViewController {
     }()
     lazy var showMenuButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.addAction(.init(handler: { _ in
+        btn.addAction(.init(handler: { [weak self] _ in
             UIView.animate(withDuration: 0.3) {
-                self.exampleControlView.isHidden.toggle()
+                self?.exampleControlView.isHidden.toggle()
             }
         }), for: .touchUpInside)
         btn.setImage(UIImage(systemName: "button.programmable"), for: .normal)
