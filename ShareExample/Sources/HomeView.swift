@@ -52,7 +52,7 @@ struct RoomPrepareConfig: Codable, Equatable {
             syncExtraOptions()
         }
     }
-    var launchDefault = true
+    var useLocalSnapshot = true
     var region: ScribbleForge.Region = Self.availableRegions[0]
 
     func syncExtraOptions() {
@@ -77,8 +77,10 @@ struct RoomPrepareConfig: Codable, Equatable {
     }
 
     static func fromData(_ data: Data) -> RoomPrepareConfig {
-        let config = try! JSONDecoder().decode(Self.self, from: data)
-        return config
+        if let config = try? JSONDecoder().decode(Self.self, from: data) {
+            return config
+        }
+        return .init()
     }
 
     func toJoinRoomOptions() -> JoinRoomOptions {
@@ -163,8 +165,8 @@ struct HomeView: View {
                 Toggle(isOn: $config.useLocalServer, label: {
                     Text("Use \(localWhiteboardSrc)")
                 })
-                Toggle(isOn: $config.launchDefault, label: {
-                    Text("Launch DefaultApps")
+                Toggle(isOn: $config.useLocalSnapshot, label: {
+                    Text("Use LocalSnapshot")
                 })
                 Toggle(isOn: $config.useRtm, label: {
                     Text("Use RTM")

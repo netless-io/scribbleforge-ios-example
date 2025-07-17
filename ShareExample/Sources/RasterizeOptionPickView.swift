@@ -3,6 +3,7 @@ import SwiftUI
 
 private let keys = ["viewport", "elements", "max"]
 struct RasterizeOptionPickView: View {
+    var cancel: (() -> Void)?
     var confirm: ((RasterizeOption)->Void)?
     @State var optionKey: String = keys[0]
     @State var scale: Float = 1
@@ -43,16 +44,21 @@ struct RasterizeOptionPickView: View {
                     TextField("Height", value: $height, formatter: NumberFormatter())
                 }
             }
-            Button("Confirm") {
-                let p = PageIdentifier.index(page)
-                let option: RasterizeOption
-                switch optionKey {
-                case "viewport": option = .viewport(page: p, scale: CGFloat(scale))
-                case "elements": option = .elementsBounds(page: p, maxWidth: width, maxHeight: height)
-                case "max": option = .maxBounds(page: p, scale: CGFloat(scale))
-                default: option = .viewport(page: p, scale: CGFloat(scale))
+            HStack {
+                Button("Cancel") {
+                    cancel?()
                 }
-                confirm?(option)
+                Button("Confirm") {
+                    let p = PageIdentifier.index(page)
+                    let option: RasterizeOption
+                    switch optionKey {
+                    case "viewport": option = .viewport(page: p, scale: CGFloat(scale))
+                    case "elements": option = .elementsBounds(page: p, maxWidth: width, maxHeight: height)
+                    case "max": option = .maxBounds(page: p, scale: CGFloat(scale))
+                    default: option = .viewport(page: p, scale: CGFloat(scale))
+                    }
+                    confirm?(option)
+                }
             }
             .buttonStyle(BorderedProminentButtonStyle())
         }

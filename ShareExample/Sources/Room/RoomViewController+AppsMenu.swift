@@ -80,44 +80,35 @@ extension RoomViewController {
             }
         })
 
-        let detailMenu = UIMenu(title: "Detail", children: [
-            UIAction(title: "Insert Image", handler: { [unowned whiteboard] _ in
-                whiteboard?.insert(image: .init(string: "https://convertcdn.netless.link/dynamicConvert/2d50ba6075dd46d0817dfe518d089a07/preview/1.png")!)
-            }),
-            UIAction(title: "Transparent Background", handler: { [unowned whiteboard] _ in
+        let detailMenu = UIMenu(title: "More", children: [
+            UIAction(title: "Use Transparent Background", handler: { [unowned whiteboard] _ in
                 whiteboard?.applicationView?.isOpaque = false
                 whiteboard?.setBackgroundColor(.clear)
             }),
-            UIAction(title: "Background Color", handler: { [unowned app] _ in
+            UIAction(title: "Update Background Color", handler: { [unowned app] _ in
                 app.setBackgroundColor(.randomColor)
             }),
-            UIAction(title: "Theme Color", handler: { [unowned app] _ in
+            UIAction(title: "Update Theme Color", handler: { [unowned app] _ in
                 app.setThemeColor(.randomColor)
             }),
-            UIAction(title: "Fill COlor", handler: { [unowned self] _ in
+            UIAction(title: "Update Fill COlor", handler: { [unowned self] _ in
                 let vc = UIColorPickerViewController()
                 vc.supportsAlpha = false
                 vc.delegate = self
                 self.present(vc, animated: true)
                 self.settingStrokeColor = false
             }),
-            UIAction(title: "MainWindow", handler: { [unowned app] _ in
-                app.performPrivateFunction("setMainCanvasVisible:", argument: NSNumber(true))
-            }),
-            UIAction(title: "Delay", handler: { [unowned app] _ in
-                app.performPrivateFunction("setDelayTranslateOut:", argument: NSNumber(1500))
-            }),
-            UIAction(title: "Cursor", handler: { [unowned app] _ in
+            UIAction(title: "Update Cursor Visible", handler: { [unowned app] _ in
                 app.setLiveCursorVisible(false)
             }),
-            UIAction(title: "Stroke Color", handler: { [unowned self] _ in
+            UIAction(title: "Update Stroke Color", handler: { [unowned self] _ in
                 let vc = UIColorPickerViewController()
                 vc.supportsAlpha = false
                 vc.delegate = self
                 self.present(vc, animated: true)
                 self.settingStrokeColor = true
             }),
-            UIAction(title: "Stroke Width", handler: { [unowned self] _ in
+            UIAction(title: "Update Stroke Width", handler: { [unowned self] _ in
                 let alert = UIAlertController(title: "StrokeWidth", message: nil, preferredStyle: .alert)
                 alert.addTextField { tf in
                     tf.keyboardType = .numberPad
@@ -196,49 +187,55 @@ extension RoomViewController {
             detailMenu,
             permissionMenu,
             viewModeMenu,
+            UIAction(title: "Insert Image", handler: { [unowned whiteboard] _ in
+                whiteboard?.insert(image: .init(string: "https://convertcdn.netless.link/dynamicConvert/2d50ba6075dd46d0817dfe518d089a07/preview/1.png")!)
+            }),
             UIMenu(title: "Users", children: userMenus),
-            UIAction(title: "GoPage", handler: { [unowned app] _ in
-                app.indexedNavigation.gotoPage(index: 0)
-            }),
-            UIAction(title: "Clean", handler: { [unowned app] _ in
-                app.clean()
-            }),
-            UIAction(title: "Insert Page", handler: { [unowned app] _ in
-                app.indexedNavigation.insertPage(after: 1)
-            }),
-            UIAction(title: "Rasterize") { [unowned app, unowned self] _ in
-                app.rasterize { result in
-                    switch result {
-                    case let .success(image):
-                        let vc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-                        vc.popoverPresentationController?.sourceView = app.applicationView
-                        self.present(vc, animated: true)
-                    case let .failure(failure):
-                        print(failure)
-                    }
-                }
-            },
-            UIAction(title: "ViewPort") { [unowned app] _ in
-                app.updateViewPort(.init(width: 144, height: 144))
-            },
-            UIAction(title: "Advance Rasterize") { [unowned app, unowned self] _ in
-                let view = RasterizeOptionPickView(confirm: { option in
-                    self.dismiss(animated: true)
-                    app.rasterize(option: option, completionHandler: { result in
+            UIMenu(title: "Pages", children: [
+                UIAction(title: "Go To", handler: { [unowned app] _ in
+                    app.indexedNavigation.gotoPage(index: 0)
+                }),
+                UIAction(title: "Insert", handler: { [unowned app] _ in
+                    app.indexedNavigation.insertPage(after: 1)
+                }),
+            ]),
+            UIMenu(title: "Rasterize", children: [
+                UIAction(title: "Normal Rasterize") { [unowned app, unowned self] _ in
+                    app.rasterize { result in
                         switch result {
                         case let .success(image):
                             let vc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
                             vc.popoverPresentationController?.sourceView = app.applicationView
                             self.present(vc, animated: true)
-                        case .failure:
-                            return
+                        case let .failure(failure):
+                            print(failure)
                         }
+                    }
+                },
+                UIAction(title: "Advance Rasterize") { [unowned app, unowned self] _ in
+                    let view = RasterizeOptionPickView(cancel: {
+                        self.dismiss(animated: true)
+                    }, confirm: { option in
+                        self.dismiss(animated: true)
+                        app.rasterize(option: option, completionHandler: { result in
+                            switch result {
+                            case let .success(image):
+                                let vc = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+                                vc.popoverPresentationController?.sourceView = app.applicationView
+                                self.present(vc, animated: true)
+                            case .failure:
+                                return
+                            }
+                        })
                     })
-                })
-                let vc = UIHostingController(rootView: view)
-                vc.modalPresentationStyle = .pageSheet
-                vc.sheetPresentationController?.detents = [.medium()]
-                self.present(vc, animated: true)
+                    let vc = UIHostingController(rootView: view)
+                    vc.modalPresentationStyle = .formSheet
+                    vc.sheetPresentationController?.detents = [.medium()]
+                    self.present(vc, animated: true)
+                },
+            ]),
+            UIAction(title: "Update ViewPort") { [unowned app] _ in
+                app.updateViewPort(.init(width: 144, height: 144))
             },
         ])
     }

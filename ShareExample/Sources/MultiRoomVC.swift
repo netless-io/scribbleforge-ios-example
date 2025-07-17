@@ -62,7 +62,7 @@ class MultiRoomVC: UIViewController {
             let provider = TestProvider(userId: userId)
 
             let fetcher: MockSnapshotFetcher
-            if config.launchDefault {
+            if config.useLocalSnapshot {
                 let data = UserDefaults.standard.data(forKey: "localSnapshot")
                 fetcher = .init(data: data)
             } else {

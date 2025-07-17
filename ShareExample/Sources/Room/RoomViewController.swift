@@ -143,9 +143,10 @@ class RoomViewController: UIViewController {
         room.joinRoom { [weak self] result in
             guard let self else { return }
             self.view.hideToastActivity()
-            self.view.makeToast("Join room success. \(prepareConfig.launchDefault ? "Launching Apps..." : "Waiting for apps...")", position: .center)
+            self.view.makeToast("Join room success. \(prepareConfig.useLocalSnapshot ? "Launching Apps..." : "Waiting for apps...")", position: .center)
             switch result {
             case .success:
+                self.launchWhiteboard()
                 self.setupViews()
                 self.setupWindowManager()
                 joinRoomSuccessHandler?(self.room)

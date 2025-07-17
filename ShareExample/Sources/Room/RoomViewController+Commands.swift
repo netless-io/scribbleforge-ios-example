@@ -29,7 +29,7 @@ extension RoomViewController {
                 self.dismiss(animated: true)
                 self.room.leaveRoom { _ in }
             }),
-            .init(title: "Debugs", subMenuAction: { [unowned self] btn in
+            .init(title: "Debug", subMenuAction: { [unowned self] debugBtn in
                 let logsMenu = UIMenu(title: "Logs", children: [
                     UIAction(title: "Export Log", handler: { _ in
                         if let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first {
@@ -53,8 +53,8 @@ extension RoomViewController {
                         }
                     }),
                 ])
-                let docsMenu = UIMenu(title: "Doc", children: [
-                    UIAction(title: "Save doc", handler: { [unowned self] _ in
+                var docsActions: [UIAction] = [
+                    UIAction(title: "Export Doc", handler: { [unowned self] _ in
                         guard let doc = self.room.perform(NSSelectorFromString("_debugDoc")).takeUnretainedValue() as? YDoc
                         else { return }
                         let sel = NSSelectorFromString("generateRoomSnapshotFromMaindoc:")
@@ -72,7 +72,17 @@ extension RoomViewController {
                             return
                         }
                     }),
-                ])
+                ]
+
+#if SOURCE_INTEGRATION
+                docsActions.append(UIAction(title: "Save As Snapshot", handler: { [unowned self] _ in
+                    if let data = self.room.snapshot() {
+                        UserDefaults.standard.set(data, forKey: "localSnapshot")
+                        self.view.makeToast("Snapshot saved to UserDefaults")
+                    }
+                }))
+#endif
+                let docsMenu = UIMenu(title: "Doc", children: docsActions)
 
                 let appCrashMenus = UIMenu(title: "JSMemory Crash", image: UIImage(systemName: "exclamationmark.warninglight.fill"), children: self.apps.values.compactMap { app -> UIAction? in
                     if let webView = app.getWebView() {
@@ -87,32 +97,47 @@ extension RoomViewController {
                     return nil
                 })
 
-                btn.menu = .init(children: [
+                var debugChildren: [UIMenuElement] = [
                     logsMenu,
                     docsMenu,
-                    appCrashMenus,
-                    UIAction(title: "Random Network Loss", state: self.monitorNetworkRandomLoss ? .on : .off, handler: { [unowned self] _ in
-                        self.monitorNetworkRandomLoss.toggle()
-                        self.room.set(key: "randomLoss", value: self.monitorNetworkRandomLoss)
-                        self.reloadExampleItems()
-                    }),
                     UIAction(title: "Clear KV Cache", handler: { _ in
                         do {
                             try WebExternalKVCache.clear()
+                            self.view.makeToast("KV Cache cleared")
                         } catch {
                             print("clear fail", error)
                         }
                     }),
-                    UIAction(title: "Web SameRoom Link", handler: { [unowned self] _ in
+                    UIAction(title: "Web Link", handler: { [unowned self] _ in
                         if self.prepareConfig.useRtm {
                             let str = "http://localhost:5173/#/wb/ios_test_web/\(self.room.roomId)?roomToken=\(self.prepareConfig.roomToken)"
                             UIPasteboard.general.string = str
                             print(str)
+                            self.view.makeToast("Web room link copied to clipboard")
                         } else {
                             self.view.makeToast("Not a rtm room")
                         }
                     }),
-                ])
+                ]
+
+#if SOURCE_INTEGRATION
+                debugChildren.append(appCrashMenus)
+                debugChildren.append(UIAction(title: "Random Network Loss", state: self.monitorNetworkRandomLoss ? .on : .off, handler: { [unowned self] _ in
+                    self.monitorNetworkRandomLoss.toggle()
+                    self.room.set(key: "randomLoss", value: self.monitorNetworkRandomLoss)
+                    self.reloadExampleItems()
+                }))
+                if #available(iOS 16.4, *) {
+                    debugChildren.append(UIAction(title: "Toggle Inspect", state: self.room._debugDoc.context.isInspectable ? .on : .off, handler: { [unowned self] _ in
+                        self.room._debugDoc.context.isInspectable.toggle()
+                        for app in self.apps {
+                            app.value.getWebView()?.isInspectable = self.room._debugDoc.context.isInspectable
+                        }
+                        self.view.makeToast("Inspect mode: \(self.room._debugDoc.context.isInspectable ? "ON" : "OFF")")
+                    }))
+                }
+#endif
+                debugBtn.menu = .init(children: debugChildren)
             }),
             .init(title: "Launch", subMenuAction: { [unowned self] btn in
                 let menu = UIMenu(title: "Launch", children: [
@@ -133,11 +158,6 @@ extension RoomViewController {
                 let menu = UIMenu(title: "Terminal", children: actions)
                 btn.menu = menu
             }),
-//            .init(title: "Save as default", clickBlock: { [unowned self] _ in
-//                if let data = self.room.snapshot() {
-//                    UserDefaults.standard.set(data, forKey: "localSnapshot")
-//                }
-//            }),
         ]
 
         if responds(to: NSSelectorFromString("tempCommands")) {

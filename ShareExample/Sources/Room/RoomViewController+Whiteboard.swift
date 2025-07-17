@@ -20,6 +20,9 @@ extension WhiteboardPermission {
 
 extension RoomViewController {
     func launchWhiteboard() {
+        if room.applicationManager.apps().contains(where: { $0.appId == "MainWhiteboard" }) {
+            return
+        }
         room.launchWhiteboard(
             appId: "MainWhiteboard",
             option: .init(
