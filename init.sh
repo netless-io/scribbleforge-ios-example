@@ -28,9 +28,7 @@ if [ "$manager" = "spm" ]; then
 elif [ "$manager" = "cocoapods" ]; then
     echo "Initializing with cocoapods..."
     cd $COCOAPODS_PROJECT_PATH
-    tuist generate --no-open
-    pod install
-    open ./S11E-Pod.xcworkspace
+    ./generate.sh
 else
     echo "Invalid choice. Exiting."
     exit 1

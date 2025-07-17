@@ -1,6 +1,8 @@
 import ProjectDescription
 
 let envTeamId = Environment.appTeamId.getString(default: "")
+let isSourceIntegration = Environment.sourceIntegration.getString(default: "false") == "true"
+
 let project = Project(
     name: "S11E-Pod",
     targets: [
@@ -21,9 +23,17 @@ let project = Project(
             sources: ["../../ShareExample/Sources/**"],
             resources: ["../../ShareExample/Resources/**"],
             dependencies: [],
-            settings: .settings(base: [
-                "DEVELOPMENT_TEAM": .string(envTeamId)
-            ])
+            settings: .settings(base: {
+                var baseSettings: [String: SettingValue] = [
+                    "DEVELOPMENT_TEAM": .string(envTeamId)
+                ]
+                
+                if isSourceIntegration {
+                    baseSettings["SWIFT_ACTIVE_COMPILATION_CONDITIONS"] = "SOURCE_INTEGRATION"
+                }
+                
+                return baseSettings
+            }())
         )
     ]
 )
