@@ -151,8 +151,9 @@ extension RoomViewController {
                 let actions = self.apps.values.map { app in
                     let typeStr = type(of: app).typeIdentifier
                     let title = "\(typeStr)-\(app.appId)"
-                    return UIAction(title: title) { _ in
-                        self.room.applicationManager.terminalApp(app.appId)
+                    let appId = app.appId
+                    return UIAction(title: title) { [unowned self] _ in
+                        self.room.applicationManager.terminalApp(appId)
                     }
                 }
                 let menu = UIMenu(title: "Terminal", children: actions)

@@ -2,6 +2,14 @@ import ScribbleForge
 import Foundation
 
 class TestProvider: NetworkProvider {
+    func addRemoteTimeListener(_ listener: @escaping (Date) -> Void) {
+        
+    }
+    
+    func removeRemoteTimeListener() {
+        
+    }
+    
     var randomOrder = false
     func manualTriggerNetworkIsConnectedForSomeSpecialProduct() {
         
