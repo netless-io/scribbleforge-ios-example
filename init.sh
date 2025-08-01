@@ -17,8 +17,14 @@ then
 fi
 
 # let user select to init project spm or cocoapods. default to cocoapods.
-read -p "Choose your dependency manager (spm/cocoapods) [cocoapods]: " manager
-manager=${manager:-cocoapods}
+# Check if DEPENDENCY_MANAGER environment variable is set
+if [ -n "$DEPENDENCY_MANAGER" ]; then
+    manager="$DEPENDENCY_MANAGER"
+    echo "Using DEPENDENCY_MANAGER from environment: $manager"
+else
+    read -p "Choose your dependency manager (spm/cocoapods) [cocoapods]: " manager
+    manager=${manager:-cocoapods}
+fi
 
 if [ "$manager" = "spm" ]; then
     echo "Initializing with spm..."
@@ -28,7 +34,15 @@ if [ "$manager" = "spm" ]; then
 elif [ "$manager" = "cocoapods" ]; then
     echo "Initializing with cocoapods..."
     cd $COCOAPODS_PROJECT_PATH
-    ./generate.sh
+    
+    # Read COCOAPODS_MODE environment variable and use it as parameter
+    if [ -n "$COCOAPODS_MODE" ]; then
+        echo "Using COCOAPODS_MODE: $COCOAPODS_MODE"
+        ./generate.sh $COCOAPODS_MODE
+    else
+        echo "COCOAPODS_MODE not set, using default: sourcecode"
+        ./generate.sh
+    fi
 else
     echo "Invalid choice. Exiting."
     exit 1
