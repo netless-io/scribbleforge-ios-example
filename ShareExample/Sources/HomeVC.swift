@@ -8,6 +8,13 @@ import Toast_Swift
 #endif
 import UIKit
 
+#if targetEnvironment(simulator)
+// 模拟器环境
+let localServerSrc = "http://localhost:8888"
+#else
+// 真机环境
+let localServerSrc = "http://vince-mac.local:8888"
+#endif
 let localWhiteboardSrc = "http://vince-mac.local:8080"
 var globalHome: UIViewController?
 class HomeVC: UIViewController {
@@ -30,6 +37,37 @@ class HomeVC: UIViewController {
         globalHome = self
     }
 
+    func localGenerateRtmToken(region: ScribbleForge.Region, netlessToken: String, roomId: String, userId: String, completionHandler: ((Result<String, Error>) -> Void)?) {
+        let url = URL(string: "\(localServerSrc)/rtm-token")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body = try! JSONSerialization.data(withJSONObject: ["uid": userId])
+        request.httpBody = body
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completionHandler?(.failure(error))
+                }
+                return
+            }
+            if let data = data {
+                let json = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                guard let rtmToken = json["token"] as? String else {
+                    DispatchQueue.main.async {
+                        let error = NSError(domain: "ScribbleForge-Example", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid token response"])
+                        completionHandler?(.failure(error))
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    completionHandler?(.success(rtmToken))
+                }
+            }
+        }
+        task.resume()
+    }
+    
     func generateRtmToken(region: ScribbleForge.Region, netlessToken: String, roomId: String, userId: String, completionHandler: ((Result<String, Error>) -> Void)?) {
         let url = URL(string: "\(region.endPoint)/\(roomId)/\(userId)/rtm/token")!
         var request = URLRequest(url: url)
@@ -64,7 +102,8 @@ class HomeVC: UIViewController {
             updateIndicator(show: true)
             if config.rtmToken.isEmpty {
                 print("Try generate rtmToken")
-                generateRtmToken(region: config.region, netlessToken: config.roomToken, roomId: config.roomId, userId: config.userId) { result in
+//                generateRtmToken
+                localGenerateRtmToken(region: config.region, netlessToken: config.roomToken, roomId: config.roomId, userId: config.userId) { result in
                     switch result {
                     case let .success(rtmToken):
                         var new = config
@@ -132,6 +171,8 @@ class HomeVC: UIViewController {
 
 // Rtm delegate
 extension HomeVC: RoomDelegate {
+    func roomUserWritableUpdate(_ room: ScribbleForge.Room, userId: String, writable: Bool) {}
+    
     func roomUserJoinRoom(_: ScribbleForge.Room, user _: ScribbleForge.RoomUser) {}
 
     func roomApplicationDidLaunch(_: ScribbleForge.Room, application _: any ScribbleForge.Application) {}
