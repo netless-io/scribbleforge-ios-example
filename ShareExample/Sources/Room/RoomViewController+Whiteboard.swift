@@ -106,6 +106,10 @@ extension RoomViewController: WhiteboardDelegate {
 
     func whiteboardElementSelected(_ whiteboard: ScribbleForge.Whiteboard, info: ScribbleForge.WhiteboardSelectInfo) {
         print("[whiteboard delegate]", #function, info)
+        if info.userId != self.room.userId {
+            return
+        }
+        
         var attributes: [ElementAttributesKey: Any] = [:]
 
         for attribute in info.attributes {

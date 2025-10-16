@@ -159,6 +159,38 @@ extension RoomViewController {
                 let menu = UIMenu(title: "Terminal", children: actions)
                 btn.menu = menu
             }),
+            .init(title: "Writable", status: self.room.isWritable() ? "true" : "false", clickBlock: { [unowned self] _ in
+                let i = self.room.isWritable()
+                self.room.setWritable(writable: !i, completionHandler: { _ in })
+            }),
+            .init(title: "Users Writable", subMenuAction: { [unowned self] btn in
+                let onlineUsers = room.userManager.idList().compactMap { self.room.userManager.getUser(userId: $0) }.filter(\.online)
+
+                let userMenus = onlineUsers.map { user in
+                    let isWritable = self.userWritableStates[user.id] ?? false
+                    return UIAction(
+                        title: user.nickName + "(\(user.id))" + (user.id == self.room.userId ? "(Self)" : ""),
+                        state: isWritable ? .on : .off
+                    ) { [unowned self] _ in
+                        let newWritableState = !isWritable
+                        self.room.setWritable(userId: user.id, writable: newWritableState, completionHandler: { result in
+                            switch result {
+                            case .success:
+                                print("Successfully set user \(user.id) writable state to: \(newWritableState)")
+                                self.view.makeToast("Set \(user.nickName) writable: \(newWritableState)")
+                                // Reload menu
+                                self.reloadExampleItems()
+                            case .failure(let error):
+                                print("Failed to set user writable state: \(error)")
+                                self.view.makeToast("Set failed: \(error.localizedDescription)")
+                            }
+                        })
+                    }
+                }
+
+                let menu = UIMenu(title: "User Writable Control", children: userMenus)
+                btn.menu = menu
+            })
         ]
 
         if responds(to: NSSelectorFromString("tempCommands")) {

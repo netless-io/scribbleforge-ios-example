@@ -56,6 +56,7 @@ class RoomViewController: UIViewController {
     var joinRoomSuccessHandler: ((Room) -> Void)?
     var settingStrokeColor = true
     let prepareConfig: RoomPrepareConfig
+    var userWritableStates: [String: Bool] = [:]
 
     init(room: Room, prepareConfig: RoomPrepareConfig) {
         self.room = room
@@ -213,13 +214,29 @@ class RoomViewController: UIViewController {
 
 // MARK: - RoomDelegate
 extension RoomViewController: RoomDelegate {
+    func roomUserWritableUpdate(_ room: ScribbleForge.Room, userId: String, writable: Bool) {
+        print(#function, userId, writable)
+
+        // 存储用户可写状态
+        userWritableStates[userId] = writable
+
+        if userId == room.userId {
+            reloadExampleItems()
+
+            roomStageContainer.layer.borderColor =
+            writable ?
+            UIColor.green.withAlphaComponent(0.45).cgColor :
+            UIColor.red.withAlphaComponent(0.45).cgColor
+        }
+    }
+    
     func roomConnectionStateDidUpdate(_: ScribbleForge.Room, connectionState: ScribbleForge.NetworkConnectionState, info: [String: Any]) {
         sdkStatusView.updateConnectionState(connectionState)
         print(#function)
     }
 
-    func roomUserJoinRoom(_: ScribbleForge.Room, user _: ScribbleForge.RoomUser) {
-        print(#function)
+    func roomUserJoinRoom(_: ScribbleForge.Room, user: ScribbleForge.RoomUser) {
+        print(#function, user)
     }
 
     func roomUserLeaveRoom(_: ScribbleForge.Room, userId _: String) {

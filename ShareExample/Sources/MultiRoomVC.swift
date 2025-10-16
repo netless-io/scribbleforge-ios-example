@@ -77,6 +77,8 @@ class MultiRoomVC: UIViewController {
                 uploaderExecutor: MockExecutor(type: .success),
                 remoteLogger: nil,
                 networkProvider: provider,
+                historyProvider: nil,
+                writableProvider: provider,
                 windowManagerOption: nil,
                 mergeThrottleTime: 0,
                 allowConsoleVerboseLog: config.showVerboseLog,

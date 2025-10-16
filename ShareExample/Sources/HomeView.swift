@@ -53,6 +53,7 @@ struct RoomPrepareConfig: Codable, Equatable {
         }
     }
     var useLocalSnapshot = true
+    var writable = true
     var region: ScribbleForge.Region = Self.availableRegions[0]
 
     func syncExtraOptions() {
@@ -85,21 +86,23 @@ struct RoomPrepareConfig: Codable, Equatable {
 
     func toJoinRoomOptions() -> JoinRoomOptions {
         let options = JoinRoomOptions(
+            writable: writable,
             authOption: .init(
                 roomId: roomId,
                 token: roomToken,
                 userId: userId,
-                nickName: "nickName",
+                nickName: userId,
                 region: region
             ),
             logOption: .init(
                 logDirPath: nil,
-                allowRemoteLog: false,
+                allowRemoteLog: true,
                 allowConsoleLog: true,
                 allowConsoleVerboseLog: showVerboseLog,
                 allowPerfLog: true
             ),
-            useSnapshotFetch: fetchSnapshot
+            useSnapshotFetch: fetchSnapshot,
+            mergeThrottleLevel: .high,
         )
         return options
     }
@@ -167,6 +170,9 @@ struct HomeView: View {
                 })
                 Toggle(isOn: $config.useLocalSnapshot, label: {
                     Text("Use LocalSnapshot")
+                })
+                Toggle(isOn: $config.writable, label: {
+                    Text("Writable")
                 })
                 Toggle(isOn: $config.useRtm, label: {
                     Text("Use RTM")
