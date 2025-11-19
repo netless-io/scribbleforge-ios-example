@@ -22,6 +22,7 @@ show_help() {
     echo "选项:"
     echo "  latest                  使用最新版本的SDK (默认)"
     echo "  sourcecode              使用源码集成"
+    echo "  localframework          使用本地 Framework 集成"
     echo "  version <版本号>         使用指定版本的SDK"
     echo "  --dry-run               只生成Podfile，不执行构建"
     echo "  -h, --help              显示此帮助信息"
@@ -41,11 +42,12 @@ interactive_mode_selection() {
     echo "" >&2
     echo -e "${GREEN}1) latest${NC}     - 使用最新版本的SDK (推荐)" >&2
     echo -e "${YELLOW}2) sourcecode${NC} - 使用本地源码集成" >&2
-    echo -e "${BLUE}3) version${NC}    - 使用指定版本的SDK" >&2
+    echo -e "${CYAN}3) localframework${NC} - 使用本地 Framework 集成" >&2
+    echo -e "${BLUE}4) version${NC}    - 使用指定版本的SDK" >&2
     echo "" >&2
     
     while true; do
-        read -p "请输入选择 [1-3，默认为1]: " choice >&2
+        read -p "请输入选择 [1-4，默认为1]: " choice >&2
         choice=${choice:-1}  # 默认选择1(latest)
         
         case $choice in
@@ -58,6 +60,10 @@ interactive_mode_selection() {
                 return 0
                 ;;
             3)
+                echo "localframework"
+                return 0
+                ;;
+            4)
                 while true; do
                     read -p "请输入SDK版本号 (例如: 0.1.35): " version >&2
                     if [ -n "$version" ]; then
@@ -69,7 +75,7 @@ interactive_mode_selection() {
                 done
                 ;;
             *)
-                echo -e "${RED}无效选择，请输入 1、2 或 3${NC}" >&2
+                echo -e "${RED}无效选择，请输入 1、2、3 或 4${NC}" >&2
                 ;;
         esac
     done
@@ -98,18 +104,25 @@ EOF
     pod 'ScribbleForge/AgoraRtmKit2.2.x', :path => '$SCRIBBLEFORGE_SOURCE_PATH'
 EOF
             ;;
+        "localframework")
+            echo -e "${GREEN}使用本地 Framework 模式${NC}"
+            cat >> Podfile << EOF
+    # 本地 Framework 模式
+    pod 'ScribbleForge/AgoraRtmKit2.2.x', :path => '../../../scribbleforge-ios/ci-scripts/ScribbleLocalFramework'
+EOF
+            ;;
         "latest")
             echo -e "${GREEN}使用最新SDK版本${NC}"
             cat >> Podfile << EOF
     # SDK集成方式（最新版本）
-    pod 'ScribbleForge', :podspec => '$SCRIBBLEFORGE_PODSPEC_URL'
+    pod 'ScribbleForge/AgoraRtmKit2.2.x', :podspec => '$SCRIBBLEFORGE_PODSPEC_URL'
 EOF
             ;;
         "version")
             echo -e "${GREEN}使用指定SDK版本: $version${NC}"
             cat >> Podfile << EOF
     # SDK集成方式（指定版本）
-    pod 'ScribbleForge', '$version'
+    pod 'ScribbleForge/AgoraRtmKit2.2.x', '$version'
 EOF
             ;;
     esac
@@ -163,6 +176,9 @@ main() {
     case $1 in
         "sourcecode")
             mode="sourcecode"
+            ;;
+        "localframework")
+            mode="localframework"
             ;;
         "latest")
             mode="latest"

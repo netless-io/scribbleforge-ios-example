@@ -38,7 +38,7 @@ elif [ "$manager" = "cocoapods" ]; then
     # Read COCOAPODS_MODE environment variable and use it as parameter
     if [ -n "$COCOAPODS_MODE" ]; then
         echo "Using COCOAPODS_MODE: $COCOAPODS_MODE"
-        ./generate.sh $COCOAPODS_MODE
+        ./generate.sh $COCOAPODS_MODE $SCRIBBLE_VERSION
     else
         echo "COCOAPODS_MODE not set, using default: sourcecode"
         ./generate.sh
