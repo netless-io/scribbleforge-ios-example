@@ -1,14 +1,6 @@
 {
-  "originHash" : "f876c7c8dc58d63cc49faeea57df52fa29e4973b93c5d97798fb7374e0f0bfae",
+  "originHash" : "41b5b3c70183f31abd0e47da7897e7824d2fcfe468c1014853c7a3e50bf6cfef",
   "pins" : [
-    {
-      "identity" : "agorartm_apple",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/AgoraIO/AgoraRtm_Apple.git",
-      "state" : {
-        "revision" : "02ddf96e6ca4ca94d9a2df4e67be2d9f9b63f7b5"
-      }
-    },
     {
       "identity" : "benchmarkkit",
       "kind" : "remoteSourceControl",
@@ -28,15 +20,6 @@
       }
     },
     {
-      "identity" : "dsbridge-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/netless-io/DSBridge-IOS",
-      "state" : {
-        "branch" : "4.0.2",
-        "revision" : "4c780b208af869a577977c24f5bbb453c716f3ce"
-      }
-    },
-    {
       "identity" : "ettrace",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/EmergeTools/ETTrace",
@@ -46,29 +29,12 @@
       }
     },
     {
-      "identity" : "messagepacker",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/netless-io/MessagePacker.git",
-      "state" : {
-        "revision" : "96173639b489152f91b8971a3718dde7e7adb234"
-      }
-    },
-    {
       "identity" : "peertalk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/EmergeTools/peertalk.git",
       "state" : {
         "revision" : "02b8bebff91cd3d7a5d89c0ddb4bbd873c62879d",
         "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "rxswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveX/RxSwift.git",
-      "state" : {
-        "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
-        "version" : "6.9.0"
       }
     },
     {

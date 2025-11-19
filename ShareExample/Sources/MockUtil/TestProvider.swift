@@ -1,25 +1,28 @@
-import ScribbleForge
 import Foundation
+import ScribbleForge
 
-class TestProvider: NetworkProvider {
-    func addRemoteTimeListener(_ listener: @escaping (Date) -> Void) {
-        
+class TestProvider: NetworkProvider, WritableProvider {
+    func addWritableStateListener(_ listener: @escaping (([String: Bool]) -> Void)) {
+        writableListeners.append(listener)
     }
     
-    func removeRemoteTimeListener() {
-        
+    func removeWritableStateListeners() {
+        writableListeners.removeAll()
     }
     
+    func setupMainChannelId(_ channelId: String) {}
+    
+    func addRemoteTimeListener(_ listener: @escaping (Date) -> Void) {}
+    
+    func removeRemoteTimeListener() {}
+
     var randomOrder = false
-    func manualTriggerNetworkIsConnectedForSomeSpecialProduct() {
-        
-    }
+    func manualTriggerNetworkIsConnectedForSomeSpecialProduct() {}
     
     func networkProviderInitialize(completionHandler: @escaping (Result<Void, any Error>) -> Void) {
         // 模拟登录成功。
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.mockStatusUpdate(.connected)
-            self.userJoinListeners.forEach { $0(self.userId) }
             completionHandler(.success(()))
         }
     }
@@ -32,12 +35,13 @@ class TestProvider: NetworkProvider {
         networkListeners.removeAll()
     }
     
-    var userJoinListeners: [((String) -> Void)] = []
+    var userJoinListeners: [(String) -> Void] = []
     func addUserJoinListener(_ listener: @escaping ((String) -> Void)) {
+        listener(userId)
         userJoinListeners.append(listener)
     }
     
-    var userLeaveListeners: [((String) -> Void)] = []
+    var userLeaveListeners: [(String) -> Void] = []
     func addUserLeaveListener(_ listener: @escaping ((String) -> Void)) {
         userLeaveListeners.append(listener)
     }
@@ -46,7 +50,7 @@ class TestProvider: NetworkProvider {
         completionHandler(.success([]))
     }
     
-    func addNetworkStatusListener(_ listener: @escaping ((ScribbleForge.NetworkConnectionState, [String : Any]) -> Void)) {
+    func addNetworkStatusListener(_ listener: @escaping ((ScribbleForge.NetworkConnectionState, [String: Any]) -> Void)) {
         networkListeners.append(listener)
     }
     
@@ -58,7 +62,7 @@ class TestProvider: NetworkProvider {
         mockStatusUpdate(.disconnected)
     }
     
-    internal init(userId: String) {
+    init(userId: String) {
         self.userId = userId
     }
     
@@ -73,16 +77,31 @@ class TestProvider: NetworkProvider {
         let msg: Data
         let type: String
     }
-    
+
     let userId: String
 
     var mockSubscribeFail = false
-    var networkListeners: [((ScribbleForge.NetworkConnectionState, [String : Any]) -> Void)] = []
-    var listeners: [String: [(NetworkMessage) ->Void]] = [:]
+    private var _writableStateListeners: [([String: Bool]) -> Void] = []
+    var writableListeners: [([String: Bool]) -> Void] {
+        get { syncQueue.sync { _writableStateListeners } }
+        set { syncQueue.async { self._writableStateListeners = newValue } }
+    }
+
+    private var _networkListeners: [(ScribbleForge.NetworkConnectionState, [String: Any]) -> Void] = []
+    var networkListeners: [(ScribbleForge.NetworkConnectionState, [String: Any]) -> Void] {
+        get { syncQueue.sync { _networkListeners } }
+        set { syncQueue.sync { _networkListeners = newValue } }
+    }
+
+    private var _listeners: [String: [(NetworkMessage) -> Void]] = [:]
+    var listeners: [String: [(NetworkMessage) -> Void]] {
+        get { syncQueue.sync { _listeners } }
+        set { syncQueue.sync { _listeners = newValue } }
+    }
     
     func mockStatusUpdate(_ state: NetworkConnectionState) {
-        networkListeners.forEach {
-            $0(state, ["reason": "mocked"])
+        for networkListener in networkListeners {
+            networkListener(state, ["reason": "mocked"])
         }
     }
     
@@ -94,7 +113,7 @@ class TestProvider: NetworkProvider {
                 lisener(m)
             }
             if randomOrder {
-                let delay = Double.random(in: 0.1...0.2)
+                let delay = Double.random(in: 0.1 ... 0.2)
 //                print("making delay", delay)
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                     send()
@@ -128,13 +147,33 @@ class TestProvider: NetworkProvider {
             }
     }
 
-    var connected: [TestProvider] = []
+    private var _connected: [TestProvider] = []
+    var connected: [TestProvider] {
+        get { syncQueue.sync { _connected } }
+        set { syncQueue.sync { _connected = newValue } }
+    }
+
+    private var _writableState: [String: Bool] = [:]
+    var writableStates: [String: Bool] {
+        get { syncQueue.sync { _writableState } }
+        set {
+            syncQueue.sync {
+                _writableState = newValue
+            }
+            self.writableListeners.forEach { $0(newValue) }
+        }
+    }
     
     func connect(_ provider: TestProvider) {
         connected.append(provider)
     }
     
+    func removeConnected() {
+        connected.removeAll()
+    }
+    
     // MARK: - Protocol
+
     func publish(channelId: String, message: String, messageType: String, completionHandler: @escaping (Result<Void, any Error>) -> Void) {
         DispatchQueue.global().async {
 //            print("test start send data.", Thread.current)
@@ -144,13 +183,12 @@ class TestProvider: NetworkProvider {
         }
     }
     
+    let syncQueue = DispatchQueue(label: "TestProviderQueue", qos: .userInitiated)
     func publish(channelId: String, data: Data, messageType: String, completionHandler: @escaping (Result<Void, any Error>) -> Void) {
-        DispatchQueue.global().async {
 //            print("test start send data.", Thread.current)
-            let model = DataModel(id: channelId, msg: data, type: messageType)
-            self.mockingReceive(model, publisher: self.userId, channel: channelId)
-            completionHandler(.success(()))
-        }
+        let model = DataModel(id: channelId, msg: data, type: messageType)
+        mockingReceive(model, publisher: userId, channel: channelId)
+        completionHandler(.success(()))
     }
     
     func subscribe(mainPresence: Bool, channelId _: String, completionHandler: @escaping (Result<Void, any Error>) -> Void) {
@@ -165,5 +203,33 @@ class TestProvider: NetworkProvider {
         var i = listeners[channelId] ?? []
         i.append(item)
         listeners[channelId] = i
+    }
+
+    // MARK: - PersistenceProvider
+
+    var mockSetWritableStateError = false
+
+    func setWritable(userId: String, writable: Bool, completion: @escaping (Error?) -> Void) {
+        DispatchQueue.global().async {
+            if self.mockSetWritableStateError {
+                completion(NSError(domain: "TestError", code: 1, userInfo: nil))
+                return
+            }
+
+            self.writableStates[userId] = writable
+
+            // 同步到其他 connected providers
+            for provider in self.connected {
+                provider.writableStates[userId] = writable
+            }
+
+            completion(nil)
+        }
+    }
+
+    func getWritableStates(completion: @escaping (Result<[String: Bool], Error>) -> Void) {
+        DispatchQueue.global().async {
+            completion(.success(self.writableStates))
+        }
     }
 }

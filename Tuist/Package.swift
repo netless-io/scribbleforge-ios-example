@@ -15,11 +15,6 @@ import PackageDescription
 let package = Package(
     name: "S11E-SPM-Example",
     dependencies: [
-        .package(url: "https://github.com/ReactiveX/RxSwift.git", .upToNextMajor(from: "6.8.0")),
-        .package(url: "https://github.com/netless-io/DSBridge-IOS", revision: "4.0.2"),
-        .package(url: "https://github.com/AgoraIO/AgoraRtm_Apple.git", revision: "02ddf96e6ca4ca94d9a2df4e67be2d9f9b63f7b5"),
-        .package(url: "https://github.com/netless-io/MessagePacker.git", revision: "96173639b489152f91b8971a3718dde7e7adb234"),
-
         .package(url: "https://github.com/marmelroy/Zip.git", .upToNextMinor(from: "2.1.2")),
         .package(url: "https://github.com/DebugSwift/DebugSwift.git", .upToNextMajor(from: "0.3.9")),
         .package(url: "https://github.com/vince-hz/BenchmarkKit.git", .upToNextMajor(from: "1.0.0")),

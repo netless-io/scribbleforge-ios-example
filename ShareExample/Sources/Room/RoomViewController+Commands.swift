@@ -1,17 +1,16 @@
-import NTLBridge
 import ScribbleForge
 import SwiftUI
 import UIKit
 import Zip
 
 extension Application {
-    func getWebView() -> NTLDWKWebView? {
+    func getWebView() -> NTLWebView? {
         if let view = applicationView {
-            if let webView = view as? NTLDWKWebView {
+            if let webView = view as? NTLWebView {
                 return webView
             }
             for subView in view.subviews {
-                if let webView = subView as? NTLDWKWebView {
+                if let webView = subView as? NTLWebView {
                     return webView
                 }
             }

@@ -45,16 +45,16 @@ extension RoomViewController {
         let launchMenu = UIMenu(title: "Launch", children: [
             docsMenu,
             UIAction(title: "Whiteboard", handler: { [unowned app] _ in
-                app.launchTestWhiteboard()
+                app.launchWhiteboard()
             }),
             UIAction(title: "Slide", handler: { [unowned app] _ in
                 app.launchSlide(option: testSlideOption)
             }),
             UIAction(title: "NativePDF", handler: { [unowned app] _ in
-                app.launchTestNativePdf()
+//                app.launchTestNativePdf()
             }),
             UIAction(title: "MediaPlayer", handler: { [unowned app] _ in
-                app.launchTestMediaPlayer()
+//                app.launchTestMediaPlayer()
             }),
         ])
         let permissionMenu = UIMenu(title: "Permission", children:

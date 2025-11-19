@@ -28,8 +28,8 @@ extension RoomViewController {
             option: .init(
                 width: 1920,
                 height: 1080,
-                maxScaleRatio: 1,
-                defaultToolInfo: .init(tool: .curve, strokeColor: UIColor.blue.toHexString())
+                maxScaleRatio: -1,
+//                defaultToolInfo: .init(tool: .curve, strokeColor: UIColor.blue.toHexString())
             )
         ) { r in
             switch r {

@@ -122,9 +122,12 @@ class HomeVC: UIViewController {
             let provider = try! AgoraRtmClientKit(rtmConfig, delegate: nil)
             rtm = provider
             print("[RTM] [DEMO] login")
-            provider.login(config.rtmToken) { response, errorInfo in
+            provider.login(config.rtmToken) {
+                response,
+                errorInfo in
                 self.updateIndicator(show: false)
-                if let errorInfo, errorInfo.errorCode != .ok {
+                if let errorInfo,
+                   errorInfo.errorCode != .ok {
                     print("Rtm error", errorInfo.errorCode.rawValue)
                     self.view.makeToast("Rtm error code \(errorInfo.errorCode.rawValue)")
                     return

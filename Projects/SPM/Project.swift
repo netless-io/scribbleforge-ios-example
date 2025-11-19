@@ -2,6 +2,9 @@ import ProjectDescription
 
 let project = Project(
     name: "S11E-SPM",
+    packages: [
+       .local(path: "../../../scribbleforge-ios-release"),
+    ],
     targets: [
         .target(
             name: "S11E-SPM",
@@ -20,7 +23,7 @@ let project = Project(
             sources: ["../../ShareExample/Sources/**"],
             resources: ["../../ShareExample/Resources/**"],
             dependencies: [
-                .project(target: "ScribbleForge", path: "../../../scribbleforge-ios"),
+                .package(product: "ScribbleForgeRTM"),
                 .external(name: "Zip", condition: nil),
                 .external(name: "DebugSwift", condition: nil),
                 .external(name: "BenchmarkKit", condition: nil),
