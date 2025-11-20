@@ -29,8 +29,15 @@ fi
 if [ "$manager" = "spm" ]; then
     echo "Initializing with spm..."
     cd $SPM_PROJECT_PATH
-    tuist install
-    tuist generate
+
+    # Read SPM_MODE environment variable and use it as parameter
+    if [ -n "$SPM_MODE" ]; then
+        echo "Using SPM_MODE: $SPM_MODE"
+        ./generate.sh $SPM_MODE $SCRIBBLE_VERSION
+    else
+        echo "SPM_MODE not set, using default: source"
+        ./generate.sh
+    fi
 elif [ "$manager" = "cocoapods" ]; then
     echo "Initializing with cocoapods..."
     cd $COCOAPODS_PROJECT_PATH

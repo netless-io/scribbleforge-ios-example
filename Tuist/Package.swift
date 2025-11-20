@@ -15,6 +15,7 @@ import PackageDescription
 let package = Package(
     name: "S11E-SPM-Example",
     dependencies: [
+        .package(url: "https://github.com/AgoraIO/AgoraRtm_Apple.git", from: .init(2, 2, 3)),
         .package(url: "https://github.com/marmelroy/Zip.git", .upToNextMinor(from: "2.1.2")),
         .package(url: "https://github.com/DebugSwift/DebugSwift.git", .upToNextMajor(from: "0.3.9")),
         .package(url: "https://github.com/vince-hz/BenchmarkKit.git", .upToNextMajor(from: "1.0.0")),

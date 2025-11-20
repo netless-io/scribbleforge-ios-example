@@ -1,7 +1,6 @@
 import ScribbleForge
 import SwiftUI
 import UIKit
-import ScribbleForge
 
 extension RoomViewController {
     func setupAppMenu(_ app: Application) {
