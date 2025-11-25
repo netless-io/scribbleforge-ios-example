@@ -37,7 +37,7 @@ extension RoomViewController {
                             }
                             let files = (try? FileManager.default.contentsOfDirectory(atPath: cacheDir.path)) ?? []
                             let logs = files
-                                .filter { $0.starts(with: "scribe_forge") }
+                                .filter { $0.starts(with: "netless") }
                                 .map { cacheDir.appendingPathComponent($0) }
                             try! Zip.zipFiles(paths: logs, zipFilePath: zipUrl, password: nil, progress: nil)
                             let vc = UIActivityViewController(activityItems: [zipUrl], applicationActivities: nil)
@@ -163,9 +163,9 @@ extension RoomViewController {
                 self.room.setWritable(writable: !i, completionHandler: { _ in })
             }),
             .init(title: "Users Writable", subMenuAction: { [unowned self] btn in
-                let onlineUsers = room.userManager.idList().compactMap { self.room.userManager.getUser(userId: $0) }.filter(\.online)
+                let allUsers = room.allUsers
 
-                let userMenus = onlineUsers.map { user in
+                let userMenus = allUsers.map { user in
                     let isWritable = self.userWritableStates[user.id] ?? false
                     return UIAction(
                         title: user.nickName + "(\(user.id))" + (user.id == self.room.userId ? "(Self)" : ""),
