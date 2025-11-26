@@ -52,7 +52,7 @@ struct RoomPrepareConfig: Codable, Equatable {
             syncExtraOptions()
         }
     }
-    var useLocalSnapshot = true
+    var useLocalSnapshot = false
     var writable = true
     var region: ScribbleForge.Region = Self.availableRegions[0]
 

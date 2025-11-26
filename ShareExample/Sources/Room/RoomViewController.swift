@@ -4,6 +4,7 @@ import ScribbleForge
 import SnapKit
 import SwiftUI
 import UIKit
+import AgoraRtmKit
 
 let zipUrl = FileManager.default.temporaryDirectory.appendingPathComponent("sf.zip")
 
@@ -25,6 +26,7 @@ class RoomViewController: UIViewController {
         UIDevice.current.userInterfaceIdiom == .phone ? .landscape : .all
     }
     
+    var availableUserIds: Set<String> = .init()
     var apps: [Int: Application] = [:]
     weak var whiteboard: Whiteboard? {
         didSet {
@@ -35,6 +37,7 @@ class RoomViewController: UIViewController {
     }
 
     let room: Room
+    var leaveHandler: (()->Void)?
     var windowManager: WindowManager { room.windowManager }
     var monitorNetworkRandomLoss = false
     var windowManagerRandomMoving = false
@@ -251,5 +254,20 @@ extension RoomViewController: RoomDelegate {
     func roomApplicationDidTerminal(_: Room, application app: any Application) {
         print(#function)
         onAppTerminal(app.appId)
+    }
+}
+
+extension RoomViewController: AgoraRtmClientDelegate {
+    func rtmKit(_ rtmKit: AgoraRtmClientKit, didReceivePresenceEvent event: AgoraRtmPresenceEvent) {
+        switch event.type {
+        case .snapshot:
+            let initUserIds = event.snapshot.map(\.userId)
+            availableUserIds.formUnion(initUserIds)
+        case .remoteJoinChannel:
+            if let userId = event.publisher {
+                availableUserIds.insert(userId)
+            }
+        default: return
+        }
     }
 }

@@ -136,6 +136,13 @@ class HomeVC: UIViewController {
                     let room = Room(joinRoomOptions: config.toJoinRoomOptions(), agoraRtmKit: provider)
                     room.addDelegate(self)
                     let vc = RoomViewController(room: room, prepareConfig: config)
+                    provider.addDelegate(vc)
+                    vc.leaveHandler = { [weak provider, weak vc] in
+                        print("[RTM] [DEMO] remove delegate")
+                        if let vc {
+                            provider?.removeDelegate(vc)
+                        }
+                    }
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: true)
                     return

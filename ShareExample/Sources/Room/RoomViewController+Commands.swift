@@ -27,6 +27,7 @@ extension RoomViewController {
             .init(title: "Leave", backgroundColor: .systemRed, clickBlock: { [unowned self] _ in
                 self.dismiss(animated: true)
                 self.room.leaveRoom { _ in }
+                self.leaveHandler?()
             }),
             .init(title: "Debug", subMenuAction: { [unowned self] debugBtn in
                 let logsMenu = UIMenu(title: "Logs", children: [
@@ -163,7 +164,17 @@ extension RoomViewController {
                 self.room.setWritable(writable: !i, completionHandler: { _ in })
             }),
             .init(title: "Users Writable", subMenuAction: { [unowned self] btn in
-                let allUsers = room.allUsers
+                let allUsersId = self.availableUserIds
+                struct TUser {
+                    let id: String
+                    let nickName: String
+                }
+                let allUsers: [TUser] = allUsersId.map {
+                    if let roomUser = self.room.userManager.getUser(userId: $0) {
+                        return .init(id: roomUser.id, nickName: roomUser.nickName)
+                    }
+                    return .init(id: $0, nickName: $0)
+                }
 
                 let userMenus = allUsers.map { user in
                     let isWritable = self.userWritableStates[user.id] ?? false
